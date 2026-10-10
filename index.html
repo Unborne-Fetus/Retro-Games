@@ -198,4 +198,4 @@ if(g.type==='racer'){rect(135,0,430,500,'#3b4458');rect(150,0,5,500,'#f5e48a');r
 }
 canvas.addEventListener('pointerdown',e=>{if(!game)return;const r=canvas.getBoundingClientRect();pointerX=(e.clientX-r.left)*700/r.width;if(game.type==='flappy')game.vy=-6.3;if(game.type==='dodge'){game.booms.push({x:pointerX,y:(e.clientY-r.top)*500/r.height,r:5,life:450})}});
 render();
-</script><script src="arcade-extra.js"></script></body></html>
+</script><script src="arcade-extra.js"></script><script src="arcade-catalog.js"></script></body></html>
