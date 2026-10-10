@@ -36,7 +36,7 @@ footer{text-align:center;color:#8793b4;padding:32px 0;font-size:13px}label{displ
 <script>
 'use strict';
 const builtin=[
-{id:'stars',name:'Galaga',genre:'Space shooter',icon:'🚀',help:'Move: ← → or A/D. Fire: Space. Clear waves of alien ships.'},
+{id:'stars',name:'Galaga',genre:'Arcade fixed shooter',icon:'🚀',help:'Move ← → / A-D; Space fires. Defeat formations, survive dives, rescue captured fighters, earn dual ships, and beat challenge stages.'},
 {id:'invaders',name:'Space Invaders',genre:'Alien defense',icon:'👾',help:'Move: ← → or A/D. Fire: Space. Defend against descending invaders.'},
 {id:'maze',name:'Pac-Man',genre:'Maze chase',icon:'🟡',help:'Use arrow keys or WASD to gather pellets and avoid the wandering ghosts.'},
 {id:'breakout',name:'Breakout',genre:'Paddle arcade',icon:'🧱',help:'Use ← → or A/D to move the paddle. Break every brick.'},
@@ -91,7 +91,7 @@ function text(t,x,y,size=20,color='white'){ctx.fillStyle=color;ctx.font='bold '+
 function circ(x,y,r,c){ctx.fillStyle=c;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill()}
 function box(a,b){return a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y}
 function startGame(){cancelAnimationFrame(raf);keys.clear();pointerX=null;last=0;game={type:active.id,score:0,lives:3,over:false,time:0,frame:0};
-const g=game;if(g.type==='snake'){g.body=[{x:12,y:9},{x:11,y:9},{x:10,y:9}];g.dir=[1,0];g.next=[1,0];g.food=food(g.body);g.tick=0}
+const g=game;if(g.type==='stars')galagaInit(g);if(g.type==='snake'){g.body=[{x:12,y:9},{x:11,y:9},{x:10,y:9}];g.dir=[1,0];g.next=[1,0];g.food=food(g.body);g.tick=0}
 if(g.type==='breakout'){g.paddle={x:300,y:462,w:100,h:15};g.ball={x:350,y:320,vx:3.5,vy:-4,r:8};g.bricks=[];for(let j=0;j<5;j++)for(let i=0;i<10;i++)g.bricks.push({x:40+i*63,y:65+j*29,w:56,h:21,alive:true,color:['#fd66be','#fa9761','#ffe371','#65e9b4','#65bcff'][j]})}
 if(g.type==='stars'||g.type==='invaders'){g.ship={x:333,y:448,w:34,h:22};g.bullets=[];g.enemies=[];g.enemyBullets=[];g.cool=0;g.spawn=0;g.wave=1;g.drift=1;
 if(g.type==='invaders')for(let j=0;j<4;j++)for(let i=0;i<10;i++)g.enemies.push({x:72+i*52,y:55+j*38,w:30,h:22,alive:true})}
@@ -116,9 +116,9 @@ raf=requestAnimationFrame(loop)}
 function food(body){let p;do{p={x:Math.floor(Math.random()*25),y:Math.floor(Math.random()*17)}}while(body.some(s=>s.x===p.x&&s.y===p.y));return p}
 function loop(t){if(!game)return;const dt=Math.min((t-last)||16,40);last=t;const g=game;g.time+=dt;g.frame++;
 rect(0,0,700,500,'#070d20');for(let i=0;i<45;i++){const x=(i*151+31)%700,y=(i*89+13)%500;rect(x,y,2,2,'#334263')}
-if(!g.over){if(g.type==='snake')snake(g,dt);if(g.type==='breakout')breakout(g,dt);if(g.type==='stars'||g.type==='invaders')shooter(g,dt);if(g.type==='maze')maze(g,dt);if(['pong','asteroids','tetris','frogger','flappy','game2048','dodge','racer'].includes(g.type))extraUpdate(g,dt);if(typeof arcadeUpdate==='function'&&arcadeModes[g.type])arcadeUpdate(g,dt)}
-else{if(g.type==='snake')snakeDraw(g);if(g.type==='maze')mazeDraw(g);if(['pong','asteroids','tetris','frogger','flappy','game2048','dodge','racer'].includes(g.type))extraDraw(g);if(typeof arcadeDraw==='function'&&arcadeModes[g.type])arcadeDraw(g);text('GAME OVER',350,235,43,'#ff69b4');text('Press Restart to play again',350,272,18,'#fff')}
-$('#stats').textContent='SCORE '+g.score+'   '+(g.type==='snake'?'LENGTH '+g.body.length:'LIVES '+g.lives);
+if(!g.over){if(g.type==='snake')snake(g,dt);if(g.type==='breakout')breakout(g,dt);if(g.type==='stars')galagaUpdate(g,dt);if(g.type==='invaders')shooter(g,dt);if(g.type==='maze')maze(g,dt);if(['pong','asteroids','tetris','frogger','flappy','game2048','dodge','racer'].includes(g.type))extraUpdate(g,dt);if(typeof arcadeUpdate==='function'&&arcadeModes[g.type])arcadeUpdate(g,dt)}
+else{if(g.type==='stars')galagaDraw(g);if(g.type==='snake')snakeDraw(g);if(g.type==='maze')mazeDraw(g);if(['pong','asteroids','tetris','frogger','flappy','game2048','dodge','racer'].includes(g.type))extraDraw(g);if(typeof arcadeDraw==='function'&&arcadeModes[g.type])arcadeDraw(g);text('GAME OVER',350,235,43,'#ff69b4');text('Press Restart to play again',350,272,18,'#fff')}
+$('#stats').textContent='SCORE '+g.score+'   '+(g.type==='snake'?'LENGTH '+g.body.length:'LIVES '+g.lives+(g.type==='stars'?'   STAGE '+g.wave+'   HITS '+g.hits+'/'+g.shotsFired:''));
 raf=requestAnimationFrame(loop)}
 function snakeDraw(g){rect(100,54,500,340,'#101c35');for(const s of g.body)rect(100+s.x*20+2,54+s.y*20+2,16,16,'#5df1ab');circ(110+g.food.x*20,64+g.food.y*20,7,'#ff6ba9')}
 function snake(g,dt){if(held('ArrowUp','w','W')&&g.dir[1]!==1)g.next=[0,-1];else if(held('ArrowDown','s','S')&&g.dir[1]!==-1)g.next=[0,1];else if(held('ArrowLeft','a','A')&&g.dir[0]!==1)g.next=[-1,0];else if(held('ArrowRight','d','D')&&g.dir[0]!==-1)g.next=[1,0];
@@ -198,4 +198,4 @@ if(g.type==='racer'){rect(135,0,430,500,'#3b4458');rect(150,0,5,500,'#f5e48a');r
 }
 canvas.addEventListener('pointerdown',e=>{if(!game)return;const r=canvas.getBoundingClientRect();pointerX=(e.clientX-r.left)*700/r.width;if(game.type==='flappy')game.vy=-6.3;if(game.type==='dodge'){game.booms.push({x:pointerX,y:(e.clientY-r.top)*500/r.height,r:5,life:450})}});
 render();
-</script><script src="arcade-extra.js"></script><script src="arcade-catalog.js"></script></body></html>
+</script><script src="galaga.js"></script><script src="arcade-extra.js"></script><script src="arcade-catalog.js"></script></body></html>
