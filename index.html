@@ -30,7 +30,7 @@ footer{text-align:center;color:#8793b4;padding:32px 0;font-size:13px}label{displ
 <label for="gameName">Game title</label><input id="gameName" type="text" placeholder="My awesome game" maxlength="65">
 <label for="gameFile">HTML file (.html)</label><input id="gameFile" type="file" accept=".html,.htm,text/html">
 <p class="hint" id="importStatus"></p><button id="importButton" class="btn">Import Game</button></dialog>
-<dialog id="playerDialog"><div class="playhead"><div><h2 id="gameTitle">Game</h2><div class="stats" id="stats"></div></div><div><button class="btn alt" id="restartButton">↻ Restart</button> <button class="close" data-close="playerDialog" aria-label="Close">×</button></div></div>
+<dialog id="playerDialog"><div class="playhead"><div><h2 id="gameTitle">Game</h2><div class="stats" id="stats"></div></div><div><button class="btn alt" id="soundButton" aria-pressed="true">🔊 Sound On</button> <button class="btn alt" id="restartButton">↻ Restart</button> <button class="close" data-close="playerDialog" aria-label="Close">×</button></div></div>
 <canvas id="screen" width="700" height="500" aria-label="Game screen"></canvas><iframe id="iframe" class="hidden" title="Imported HTML game" sandbox="allow-scripts allow-pointer-lock" referrerpolicy="no-referrer"></iframe>
 <p id="instructions" class="controls"></p><div class="touch" id="touchControls"><button data-key="ArrowLeft">◀</button><button data-key="ArrowUp">▲</button><button data-key="ArrowDown">▼</button><button data-key="ArrowRight">▶</button><button data-key="Space">●</button></div></dialog>
 <script>
@@ -77,7 +77,7 @@ try{const html=await file.text();const item={id:'user-'+Date.now(),name,genre:'M
 catch(e){custom.pop();status.textContent='Could not save: '+e.message}
 };
 function resize(){canvas.width=700;canvas.height=500}resize();
-function openGame(g){closeGame();active=g;$('#gameTitle').textContent=g.name;$('#instructions').textContent=g.help||'Imported game: controls depend on the game.';$('#stats').textContent='';$('#restartButton').style.display=g.html?'none':'';$('#screen').classList.toggle('hidden',!!g.html);$('#iframe').classList.toggle('hidden',!g.html);$('#touchControls').classList.toggle('hidden',!!g.html);dialog.showModal();
+function openGame(g){closeGame();active=g;$('#gameTitle').textContent=g.name;$('#instructions').textContent=g.help||'Imported game: controls depend on the game.';$('#stats').textContent='';$('#restartButton').style.display=g.html?'none':'';$('#screen').classList.toggle('hidden',!!g.html);$('#iframe').classList.toggle('hidden',!g.html);$('#touchControls').classList.toggle('hidden',!!g.html);dialog.showModal();if(typeof arcadeUnlockSound==='function')arcadeUnlockSound();
 if(g.html){$('#iframe').srcdoc=g.html;return}startGame()}
 function closeGame(){cancelAnimationFrame(raf);raf=0;game=null;keys.clear();pointerX=null;$('#iframe').removeAttribute('srcdoc')}
 dialog.addEventListener('close',()=>{closeGame();active=null});$('#restartButton').onclick=()=>{if(active&&!active.html)startGame()};
@@ -198,4 +198,4 @@ if(g.type==='racer'){rect(135,0,430,500,'#3b4458');rect(150,0,5,500,'#f5e48a');r
 }
 canvas.addEventListener('pointerdown',e=>{if(!game)return;const r=canvas.getBoundingClientRect();pointerX=(e.clientX-r.left)*700/r.width;if(game.type==='flappy')game.vy=-6.3;if(game.type==='dodge'){game.booms.push({x:pointerX,y:(e.clientY-r.top)*500/r.height,r:5,life:450})}});
 render();
-</script><script src="galaga.js"></script><script src="classic-polish.js"></script><script src="arcade-extra.js"></script><script src="arcade-polish.js"></script><script src="arcade-catalog.js"></script><script src="arcade-art.js"></script></body></html>
+</script><script src="arcade-audio.js"></script><script src="galaga.js"></script><script src="classic-polish.js"></script><script src="arcade-extra.js"></script><script src="arcade-polish.js"></script><script src="arcade-catalog.js"></script><script src="arcade-art.js"></script></body></html>
