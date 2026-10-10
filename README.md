@@ -1,10 +1,10 @@
 # Retro Games Arcade
 
-A Windows desktop and web collection of 261 playable arcade-inspired games.
+A Windows desktop and web collection of 262 playable arcade-inspired games.
 
 ## Games
 
-The app includes **261 launchable entries: 13 initial mini-games, 48 additional arcade mini-games, and 200 themed variants** of eight shared gameplay engines. These are not 261 distinct commercial-quality game engines or full ports of the named games.
+The app includes **262 launchable entries: 14 initial mini-games, 48 additional arcade mini-games, and 200 themed variants** of eight shared gameplay engines. These are not 261 distinct commercial-quality game engines or full ports of the named games.
 Galaga, Space Invaders, Pac-Man, Breakout, Snake, Pong, Asteroids, Tetris, Frogger, Flappy Bird, 2048, Missile Command, Out Run, Doodle Jump, Crossy Road, Temple Run, Subway Surfers, Fruit Ninja, Donkey Kong, Super Mario Bros., 1942, Xevious, Arkanoid, Simon, and many more.
 
 
@@ -44,3 +44,6 @@ Run `npm run test:smoke` to check all 50 targeted games start and step through s
 
 ## GitHub Pages setup
 The browser version works by opening index.html directly. For GitHub Pages deployment, first open repository **Settings → Pages → Build and deployment** and set **Source: GitHub Actions**. Until Pages is enabled, the Pages deployment workflow must be run manually; the Windows EXE workflow still runs automatically on main.
+
+## Lunar Lander (Tesla Arcade-inspired Atari classic)
+Added a dedicated **Lunar Lander** mini-game: original vector-style terrain and module art, gravity and inertia, angle and velocity indicators, directional thrust and fuel usage, three landing zones with different bonus multipliers, precision touchdown scoring, crashes with limited lives, saved high score, and tougher missions with optional wind. Rotate with **←/→** or **A/D**, thrust with **↑**, **W** or **Space**, and use the displayed touch buttons on mobile. This is not an official Atari/Tesla game or ROM.
