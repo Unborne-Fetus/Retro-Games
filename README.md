@@ -41,3 +41,6 @@ The first **50** library entries now use improved dedicated or specialized arcad
 
 ## Automated testing
 Run `npm run test:smoke` to check all 50 targeted games start and step through simulation, verify the full catalog, and ensure every loaded JavaScript file is included in the Windows executable configuration.
+
+## GitHub Pages setup
+The browser version works by opening index.html directly. For GitHub Pages deployment, first open repository **Settings → Pages → Build and deployment** and set **Source: GitHub Actions**. Until Pages is enabled, the Pages deployment workflow must be run manually; the Windows EXE workflow still runs automatically on main.
