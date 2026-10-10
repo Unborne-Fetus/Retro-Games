@@ -93,7 +93,7 @@ function box(a,b){return a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y}
 function startGame(){cancelAnimationFrame(raf);keys.clear();pointerX=null;last=0;game={type:active.id,score:0,lives:3,over:false,time:0,frame:0};
 const g=game;if(g.type==='stars')galagaInit(g);if(g.type==='snake'){g.body=[{x:12,y:9},{x:11,y:9},{x:10,y:9}];g.dir=[1,0];g.next=[1,0];g.food=food(g.body);g.tick=0}
 if(g.type==='breakout'){g.paddle={x:300,y:462,w:100,h:15};g.ball={x:350,y:320,vx:3.5,vy:-4,r:8};g.bricks=[];for(let j=0;j<5;j++)for(let i=0;i<10;i++)g.bricks.push({x:40+i*63,y:65+j*29,w:56,h:21,alive:true,color:['#fd66be','#fa9761','#ffe371','#65e9b4','#65bcff'][j]})}
-if(g.type==='stars'||g.type==='invaders'){g.ship={x:333,y:448,w:34,h:22};g.bullets=[];g.enemies=[];g.enemyBullets=[];g.cool=0;g.spawn=0;g.wave=1;g.drift=1;
+if(g.type==='invaders'){g.ship={x:333,y:448,w:34,h:22};g.bullets=[];g.enemies=[];g.enemyBullets=[];g.cool=0;g.spawn=0;g.wave=1;g.drift=1;
 if(g.type==='invaders')for(let j=0;j<4;j++)for(let i=0;i<10;i++)g.enemies.push({x:72+i*52,y:55+j*38,w:30,h:22,alive:true})}
 if(['pong','asteroids','tetris','frogger','flappy','game2048','dodge','racer'].includes(g.type))extraInit(g);if(typeof arcadeInit==='function'&&arcadeModes[g.type])arcadeInit(g);
 if(g.type==='maze'){g.map=[
