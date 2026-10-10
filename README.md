@@ -30,3 +30,6 @@ Open `index.html` in a browser, or enable GitHub Pages (Settings → Pages → G
 Click **+ Add Game**, then select a self-contained HTML game (under 1.5 MB). Imported games run in a sandboxed iframe, and are stored locally within the app/browser. Imports are **not** shared with other users and can be lost if app/browser storage is cleared. Only import games you trust and have permission to use.
 
 Permanent game additions can be contributed as pull requests.
+
+## Galaga improvements
+Galaga now uses a dedicated enhanced fixed-screen shooter engine with original pixel-art fighters and enemy sprites, entering formations, bees/butterflies/two-hit commanders, looping dives, enemy projectiles, tractor beams, fighter capture and rescue, dual ships, bonus challenge stages, stage progression, hit-rate display, explosions, and locally saved high scores. It is a fan-inspired recreation rather than an asset-for-asset port of the original.
