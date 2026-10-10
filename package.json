@@ -27,7 +27,8 @@
       "galaga.js",
       "arcade-polish.js",
       "classic-polish.js",
-      "arcade-art.js"
+      "arcade-art.js",
+      "arcade-audio.js"
     ],
     "directories": {
       "output": "dist"
