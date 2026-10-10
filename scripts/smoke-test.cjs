@@ -25,7 +25,7 @@ vm.runInContext(inline[1],sandbox,{filename:'index.html'});
 for(const filename of scripts)vm.runInContext(fs.readFileSync(path.join(root,filename),'utf8'),sandbox,{filename});
 const runGames=function(){
  const issues=[],names=[];
- if(builtin.length!==261)issues.push('Expected 261 games, got '+builtin.length);
+ if(builtin.length!==262)issues.push('Expected 262 games, got '+builtin.length);
  for(let i=0;i<50;i++){
   const name=builtin[i].name;
   try{
@@ -44,9 +44,26 @@ const runGames=function(){
  return {total:builtin.length,checked:names.length,issues};
 };
 const result=vm.runInContext('('+runGames.toString()+')()',sandbox);
-assert.equal(result.total,261);
+assert.equal(result.total,262);
 assert.equal(result.checked,50);
 assert.deepEqual(Array.from(result.issues),[]);
+const landerTest=vm.runInContext(`(()=>{
+ const g={type:'lander',score:0,lives:3,time:0,frame:0,over:false};
+ landerInit(g);
+ const pad=g.pads[1];g.ship.x=pad.x+pad.w/2;g.ship.y=pad.y-19;g.ship.vx=0;g.ship.vy=.95;g.ship.angle=0;
+ for(let i=0;i<6&&g.phase==='flying';i++)landerUpdate(g,16.667);
+ const success=g.phase==='landed'&&g.score>0;
+ if(success)landerUpdate(g,1800);
+ const advanced=g.wave===2;
+ // Cause an unsafe high-speed impact and ensure a life is deducted.
+ const hardPad=g.pads[0];g.ship.x=hardPad.x+hardPad.w/2;g.ship.y=hardPad.y-21;g.ship.vy=5;g.ship.vx=2;g.ship.angle=.6;
+ landerUpdate(g,16.667);
+ const crash=g.phase==='crash'&&g.lives===2;
+ return {success,advanced,crash,entries:builtin.length};
+})()`,sandbox);
+assert(landerTest.success,'Lunar Lander must award points for a controlled touchdown');
+assert(landerTest.advanced,'Lunar Lander must advance to next mission');
+assert(landerTest.crash,'Lunar Lander must penalize an unsafe collision');
 const pack=JSON.parse(fs.readFileSync(path.join(root,'package.json'),'utf8'));
 for(const s of scripts)assert(pack.build.files.includes(s),'Missing Windows bundle file: '+s);
-console.log('PASS: 50 games started and simulated, 261 catalog entries, Windows assets present.');
+console.log('PASS: 50 games started and simulated, Lunar Lander land/crash verified, 262 catalog entries, Windows assets present.');
