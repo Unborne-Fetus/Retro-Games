@@ -19,6 +19,7 @@
     "asar": true,
     "files": [
       "index.html",
+      "arcade-extra.js",
       "electron/**/*",
       "package.json"
     ],
