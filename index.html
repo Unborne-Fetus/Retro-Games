@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Retro Games Arcade</title>
+<style>
+:root{color-scheme:dark;--bg:#090d1e;--panel:#151b36;--edge:#303a62;--pink:#fc4eac;--cyan:#53e9f5;--yellow:#ffe06b;--text:#eff5ff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#222850 0,#090d1e 55%);font:16px system-ui,sans-serif;color:var(--text);min-height:100vh}
+button,input{font:inherit}button{cursor:pointer}.wrap{max-width:1200px;margin:auto;padding:24px}header{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+h1{font-size:clamp(24px,4vw,42px);margin:0;color:var(--yellow);text-shadow:3px 3px #b93081;letter-spacing:2px}h1 span{color:var(--cyan)}.sub{color:#b6bed8;margin:5px 0 0}
+.btn{color:#0b1024;background:var(--cyan);border:0;border-radius:10px;padding:11px 17px;font-weight:800}.btn.alt{background:#303b62;color:white}.btn.pink{background:var(--pink)}
+.toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:26px 0}input[type=search],input[type=text]{background:#0c1229;color:white;border:1px solid #3b4770;border-radius:10px;padding:12px;width:100%;max-width:360px}
+.filters{display:flex;gap:8px;flex-wrap:wrap}.chip{background:#1c2544;color:#cbd5ee;border:1px solid #343e67;border-radius:18px;padding:7px 14px}.chip.active{color:#080d1e;background:var(--yellow)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:18px}.game{background:linear-gradient(145deg,#1c2547,#11182f);border:1px solid #35416d;border-radius:18px;overflow:hidden;transition:transform .15s,border-color .15s}.game:hover{transform:translateY(-3px);border-color:var(--cyan)}.cover{height:135px;display:grid;place-items:center;font-size:70px;background:radial-gradient(circle,#38436b,#10172e)}.info{padding:16px}.info h3{margin:0 0 5px}.info p{color:#a9b5d2;margin:0 0 16px;font-size:13px}.actions{display:flex;gap:8px;align-items:center;justify-content:space-between}.tiny{font-size:12px;color:#b6bed8}.play{background:var(--pink);border:0;padding:9px 16px;color:#100b20;font-weight:800;border-radius:8px}.delete{border:0;background:transparent;color:#ff9fba;font-size:13px}
+dialog{background:#121934;color:white;border:1px solid #576392;border-radius:16px;padding:24px;max-width:min(94vw,560px);width:100%}dialog::backdrop{background:#030513d9}dialog h2{margin-top:0}.close{float:right;background:none;border:0;color:#fff;font-size:24px}
+#playerDialog{max-width:min(96vw,850px)}.playhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.playhead h2{margin:0}.stats{color:var(--yellow);font-weight:700}
+#screen{display:block;width:100%;max-width:700px;aspect-ratio:7/5;background:#050916;border:2px solid #435282;border-radius:8px;margin:auto;touch-action:none}
+#iframe{width:100%;height:min(70vh,550px);background:white;border:1px solid #46547c;border-radius:8px}.hidden{display:none!important}.controls{color:#aebcdc;font-size:13px;line-height:1.6;margin:12px 0}
+.touch{display:none;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:12px}.touch button{min-width:64px;min-height:50px;background:#263459;border:1px solid #566799;border-radius:12px;color:white;font-size:18px;touch-action:none}
+footer{text-align:center;color:#8793b4;padding:32px 0;font-size:13px}label{display:block;margin:12px 0 6px;color:#c5ceed}.hint{font-size:13px;color:#a9b5d2;line-height:1.5}
+@media(pointer:coarse){.touch{display:flex}}@media(max-width:600px){.wrap{padding:15px}dialog{padding:14px}.cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.cover{height:100px;font-size:50px}.info{padding:11px}.info h3{font-size:15px}.play{padding:8px 11px}.toolbar{margin:18px 0}}
+</style>
+</head>
+<body><div class="wrap">
+<header><div><h1>RETRO <span>ARCADE</span></h1><p class="sub">Classic-inspired games. Your collection. Your rules.</p></div><button class="btn" id="addButton">＋ Add Game</button></header>
+<div class="toolbar"><input id="search" type="search" placeholder="Search your games..." aria-label="Search games"><div class="filters"><button class="chip active" data-filter="all">All Games</button><button class="chip" data-filter="built">Built-in</button><button class="chip" data-filter="custom">My Games</button></div></div>
+<main class="cards" id="cards"></main><footer>Built for keyboard and touch • Games you import are stored locally in your browser.</footer>
+</div>
+<dialog id="addDialog"><button class="close" data-close="addDialog" aria-label="Close">×</button><h2>Add a game</h2><p class="hint">Import a self-contained HTML game from your device. Only import games you trust and have permission to use. The file runs in a sandboxed frame and is stored on this device.</p>
+<label for="gameName">Game title</label><input id="gameName" type="text" placeholder="My awesome game" maxlength="65">
+<label for="gameFile">HTML file (.html)</label><input id="gameFile" type="file" accept=".html,.htm,text/html">
+<p class="hint" id="importStatus"></p><button id="importButton" class="btn">Import Game</button></dialog>
+<dialog id="playerDialog"><div class="playhead"><div><h2 id="gameTitle">Game</h2><div class="stats" id="stats"></div></div><div><button class="btn alt" id="restartButton">↻ Restart</button> <button class="close" data-close="playerDialog" aria-label="Close">×</button></div></div>
+<canvas id="screen" width="700" height="500" aria-label="Game screen"></canvas><iframe id="iframe" class="hidden" title="Imported HTML game" sandbox="allow-scripts allow-pointer-lock" referrerpolicy="no-referrer"></iframe>
+<p id="instructions" class="controls"></p><div class="touch" id="touchControls"><button data-key="ArrowLeft">◀</button><button data-key="ArrowUp">▲</button><button data-key="ArrowDown">▼</button><button data-key="ArrowRight">▶</button><button data-key="Space">●</button></div></dialog>
+<script>
+'use strict';
+const builtin=[
+{id:'stars',name:'Star Defender',genre:'Space shooter',icon:'🚀',help:'Move: ← → or A/D. Fire: Space. Clear waves of alien ships.'},
+{id:'invaders',name:'Pixel Invaders',genre:'Alien defense',icon:'👾',help:'Move: ← → or A/D. Fire: Space. Defend against descending invaders.'},
+{id:'maze',name:'Maze Munch',genre:'Maze chase',icon:'🟡',help:'Use arrow keys or WASD to gather pellets and avoid the wandering ghosts.'},
+{id:'breakout',name:'Neon Breakout',genre:'Paddle arcade',icon:'🧱',help:'Use ← → or A/D to move the paddle. Break every brick.'},
+{id:'snake',name:'Pixel Snake',genre:'Arcade puzzle',icon:'🐍',help:'Use arrow keys or WASD to eat food without hitting yourself.'}
+];
+const $=s=>document.querySelector(s),cards=$('#cards'),canvas=$('#screen'),ctx=canvas.getContext('2d'),dialog=$('#playerDialog');
+let custom=[],filter='all',active=null,game=null,raf=0,last=0,keys=new Set(),pointerX=null;
+const storageKey='retro-arcade-html-v1';
+try{custom=JSON.parse(localStorage.getItem(storageKey)||'[]');if(!Array.isArray(custom))custom=[];}catch{custom=[]}
+function save(){localStorage.setItem(storageKey,JSON.stringify(custom))}
+function render(){const q=$('#search').value.toLowerCase().trim();cards.replaceChildren();
+const list=[...(filter==='custom'?[]:builtin),...(filter==='built'?[]:custom)].filter(x=>x.name.toLowerCase().includes(q));
+for(const g of list){const c=document.createElement('article');c.className='game';
+const cv=document.createElement('div');cv.className='cover';cv.textContent=g.icon||'🕹️';
+const inf=document.createElement('div');inf.className='info';const title=document.createElement('h3');title.textContent=g.name;const desc=document.createElement('p');desc.textContent=g.genre||'Imported game';
+const acts=document.createElement('div');acts.className='actions';const play=document.createElement('button');play.className='play';play.textContent='▶ Play';play.onclick=()=>openGame(g);
+acts.append(play);if(g.html){const del=document.createElement('button');del.className='delete';del.textContent='Remove';del.onclick=()=>{if(confirm('Remove '+g.name+' from this browser?')){custom=custom.filter(x=>x.id!==g.id);save();render()}};acts.append(del)}else{const tag=document.createElement('span');tag.className='tiny';tag.textContent='BUILT-IN';acts.append(tag)}
+inf.append(title,desc,acts);c.append(cv,inf);cards.append(c)}
+if(!list.length){const t=document.createElement('p');t.textContent='No games found. Add one to your arcade!';cards.append(t)}
+}
+$('#search').addEventListener('input',render);document.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{filter=b.dataset.filter;document.querySelectorAll('[data-filter]').forEach(x=>x.classList.toggle('active',x===b));render()});
+$('#addButton').onclick=()=>$('#addDialog').showModal();
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>document.getElementById(b.dataset.close).close());
+$('#importButton').onclick=async()=>{
+const file=$('#gameFile').files[0],name=$('#gameName').value.trim()||(file&&file.name.replace(/\.html?$/i,'')),status=$('#importStatus');
+if(!file||!/\.html?$/i.test(file.name)){status.textContent='Choose an HTML file first.';return}
+if(file.size>1500000){status.textContent='Please use a self-contained HTML file smaller than 1.5 MB.';return}
+try{const html=await file.text();const item={id:'user-'+Date.now(),name,genre:'My games',icon:'🕹️',html};custom.push(item);save();render();$('#addDialog').close();$('#gameName').value='';$('#gameFile').value='';status.textContent='';filter='all';document.querySelectorAll('[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter==='all'))}
+catch(e){custom.pop();status.textContent='Could not save: '+e.message}
+};
+function resize(){canvas.width=700;canvas.height=500}resize();
+function openGame(g){closeGame();active=g;$('#gameTitle').textContent=g.name;$('#instructions').textContent=g.help||'Imported game: controls depend on the game.';$('#stats').textContent='';$('#restartButton').style.display=g.html?'none':'';$('#screen').classList.toggle('hidden',!!g.html);$('#iframe').classList.toggle('hidden',!g.html);$('#touchControls').classList.toggle('hidden',!!g.html);dialog.showModal();
+if(g.html){$('#iframe').srcdoc=g.html;return}startGame()}
+function closeGame(){cancelAnimationFrame(raf);raf=0;game=null;keys.clear();pointerX=null;$('#iframe').removeAttribute('srcdoc')}
+dialog.addEventListener('close',()=>{closeGame();active=null});$('#restartButton').onclick=()=>{if(active&&!active.html)startGame()};
+document.addEventListener('keydown',e=>{if(!dialog.open||!active||active.html)return;if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Space',' '].includes(e.key))e.preventDefault();keys.add(e.code==='Space'?'Space':e.key);if(e.key===' ')keys.add('Space')});
+document.addEventListener('keyup',e=>{keys.delete(e.key);if(e.code==='Space')keys.delete('Space')});
+window.addEventListener('blur',()=>keys.clear());document.querySelectorAll('[data-key]').forEach(b=>{const down=e=>{e.preventDefault();keys.add(b.dataset.key)};const up=e=>{e.preventDefault();keys.delete(b.dataset.key)};b.addEventListener('pointerdown',down);b.addEventListener('pointerup',up);b.addEventListener('pointercancel',up);b.addEventListener('pointerleave',up)});
+canvas.addEventListener('pointermove',e=>{if(!game)return;const r=canvas.getBoundingClientRect();pointerX=(e.clientX-r.left)*700/r.width});
+function held(...v){return v.some(k=>keys.has(k))}
+function rect(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(x,y,w,h)}
+function text(t,x,y,size=20,color='white'){ctx.fillStyle=color;ctx.font='bold '+size+'px monospace';ctx.textAlign='center';ctx.fillText(t,x,y)}
+function circ(x,y,r,c){ctx.fillStyle=c;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill()}
+function box(a,b){return a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y}
+function startGame(){cancelAnimationFrame(raf);keys.clear();pointerX=null;last=0;game={type:active.id,score:0,lives:3,over:false,time:0,frame:0};
+const g=game;if(g.type==='snake'){g.body=[{x:12,y:9},{x:11,y:9},{x:10,y:9}];g.dir=[1,0];g.next=[1,0];g.food=food(g.body);g.tick=0}
+if(g.type==='breakout'){g.paddle={x:300,y:462,w:100,h:15};g.ball={x:350,y:320,vx:3.5,vy:-4,r:8};g.bricks=[];for(let j=0;j<5;j++)for(let i=0;i<10;i++)g.bricks.push({x:40+i*63,y:65+j*29,w:56,h:21,alive:true,color:['#fd66be','#fa9761','#ffe371','#65e9b4','#65bcff'][j]})}
+if(g.type==='stars'||g.type==='invaders'){g.ship={x:333,y:448,w:34,h:22};g.bullets=[];g.enemies=[];g.enemyBullets=[];g.cool=0;g.spawn=0;g.wave=1;g.drift=1;
+if(g.type==='invaders')for(let j=0;j<4;j++)for(let i=0;i<10;i++)g.enemies.push({x:72+i*52,y:55+j*38,w:30,h:22,alive:true})}
+if(g.type==='maze'){g.map=[
+'#####################',
+'#.........#.........#',
+'#.###.###.#.###.###.#',
+'#...#.....#.....#...#',
+'###.#.#########.#.###',
+'#...#...........#...#',
+'#.#####.#####.#####.#',
+'#.......#...#.......#',
+'#.#####.#.#.#.#####.#',
+'#...#...#.#.#...#...#',
+'###.#.###.#.###.#.###',
+'#.....#.......#.....#',
+'#.###.#.#####.#.###.#',
+'#...#...........#...#',
+'#####################'].map(s=>s.split(''));g.player={x:1,y:1};g.ghosts=[{x:19,y:13},{x:19,y:1},{x:1,y:13}];g.dir=[0,0];g.tick=0;g.remaining=g.map.flat().filter(c=>c==='.').length;g.map[1][1]=' '}
+raf=requestAnimationFrame(loop)}
+function food(body){let p;do{p={x:Math.floor(Math.random()*25),y:Math.floor(Math.random()*17)}}while(body.some(s=>s.x===p.x&&s.y===p.y));return p}
+function loop(t){if(!game)return;const dt=Math.min((t-last)||16,40);last=t;const g=game;g.time+=dt;g.frame++;
+rect(0,0,700,500,'#070d20');for(let i=0;i<45;i++){const x=(i*151+31)%700,y=(i*89+13)%500;rect(x,y,2,2,'#334263')}
+if(!g.over){if(g.type==='snake')snake(g,dt);if(g.type==='breakout')breakout(g,dt);if(g.type==='stars'||g.type==='invaders')shooter(g,dt);if(g.type==='maze')maze(g,dt)}
+else{if(g.type==='snake')snakeDraw(g);if(g.type==='maze')mazeDraw(g);text('GAME OVER',350,235,43,'#ff69b4');text('Press Restart to play again',350,272,18,'#fff')}
+$('#stats').textContent='SCORE '+g.score+'   '+(g.type==='snake'?'LENGTH '+g.body.length:'LIVES '+g.lives);
+raf=requestAnimationFrame(loop)}
+function snakeDraw(g){rect(100,54,500,340,'#101c35');for(const s of g.body)rect(100+s.x*20+2,54+s.y*20+2,16,16,'#5df1ab');circ(110+g.food.x*20,64+g.food.y*20,7,'#ff6ba9')}
+function snake(g,dt){if(held('ArrowUp','w','W')&&g.dir[1]!==1)g.next=[0,-1];else if(held('ArrowDown','s','S')&&g.dir[1]!==-1)g.next=[0,1];else if(held('ArrowLeft','a','A')&&g.dir[0]!==1)g.next=[-1,0];else if(held('ArrowRight','d','D')&&g.dir[0]!==-1)g.next=[1,0];
+g.tick+=dt;if(g.tick>Math.max(65,130-g.score*2)){g.tick=0;g.dir=g.next;const h={x:g.body[0].x+g.dir[0],y:g.body[0].y+g.dir[1]};const eat=h.x===g.food.x&&h.y===g.food.y;if(h.x<0||h.x>=25||h.y<0||h.y>=17||g.body.slice(0,eat?undefined:-1).some(s=>s.x===h.x&&s.y===h.y)){g.over=true;return}g.body.unshift(h);if(eat){g.score+=10;g.food=food(g.body)}else g.body.pop()}snakeDraw(g)}
+function breakout(g,dt){const s=dt/16;const p=g.paddle,b=g.ball;if(pointerX!==null)p.x=Math.max(0,Math.min(700-p.w,pointerX-p.w/2));else if(held('ArrowLeft','a','A'))p.x-=7*s;else if(held('ArrowRight','d','D'))p.x+=7*s;p.x=Math.max(0,Math.min(700-p.w,p.x));
+b.x+=b.vx*s;b.y+=b.vy*s;if(b.x<8||b.x>692)b.vx*=-1;if(b.y<8)b.vy=Math.abs(b.vy);
+if(b.y+b.r>=p.y&&b.y-b.r<p.y+16&&b.x>=p.x&&b.x<=p.x+p.w&&b.vy>0){b.vy=-Math.abs(b.vy);b.vx=((b.x-(p.x+p.w/2))/(p.w/2))*5}
+if(b.y>510){g.lives--;b.x=350;b.y=320;b.vy=-4;b.vx=3;if(g.lives<=0)g.over=true}
+for(const br of g.bricks){if(!br.alive)continue;rect(br.x,br.y,br.w,br.h,br.color);if(b.x+b.r>br.x&&b.x-b.r<br.x+br.w&&b.y+b.r>br.y&&b.y-b.r<br.y+br.h){br.alive=false;b.vy*=-1;g.score+=10}}
+if(g.bricks.every(x=>!x.alive)){g.over=true;g.score+=100;g.lives=0}rect(p.x,p.y,p.w,p.h,'#56ecf6');circ(b.x,b.y,b.r,'#ffe17b');text('NEON BREAKOUT',350,38,22,'#fff')}
+function shooter(g,dt){const s=dt/16,p=g.ship;if(pointerX!==null)p.x=Math.max(5,Math.min(660,pointerX-p.w/2));else if(held('ArrowLeft','a','A'))p.x-=5*s;else if(held('ArrowRight','d','D'))p.x+=5*s;p.x=Math.max(5,Math.min(660,p.x));g.cool-=dt;
+if(held('Space')&&g.cool<=0){g.bullets.push({x:p.x+15,y:p.y-8,w:4,h:14});g.cool=220}
+for(const b of g.bullets)b.y-=8*s;g.bullets=g.bullets.filter(b=>b.y>-20);
+if(g.type==='stars'){g.spawn-=dt;if(g.spawn<=0){g.enemies.push({x:Math.random()*650+15,y:-35,w:30,h:24,alive:true,vy:1.5+Math.random()*1.7});g.spawn=Math.max(260,830-g.score*2)}}
+else{let edge=false;for(const e of g.enemies){e.x+=g.drift*.55*s*(1+g.wave*.2);if(e.x<12||e.x>660)edge=true}if(edge){g.drift*=-1;for(const e of g.enemies)e.y+=15}if(g.enemies.length===0){g.wave++;for(let j=0;j<4;j++)for(let i=0;i<10;i++)g.enemies.push({x:72+i*52,y:48+j*34,w:30,h:22,alive:true})}}
+for(const e of g.enemies){if(g.type==='stars')e.y+=e.vy*s;rect(e.x,e.y,e.w,e.h,g.type==='stars'?'#ff80c2':'#69e3a2');rect(e.x+5,e.y+7,5,5,'#081126');rect(e.x+20,e.y+7,5,5,'#081126');if(e.y>480||box(e,p)){e.alive=false;g.lives--;if(g.lives<=0)g.over=true}
+for(const b of g.bullets)if(!b.hit&&box(b,e)){b.hit=true;e.alive=false;g.score+=g.type==='stars'?15:10}}
+g.enemies=g.enemies.filter(e=>e.alive);g.bullets=g.bullets.filter(b=>!b.hit);
+if(g.type==='invaders'&&g.enemies.length&&Math.random()<.015){const e=g.enemies[Math.floor(Math.random()*g.enemies.length)];g.enemyBullets.push({x:e.x+14,y:e.y+25,w:4,h:12})}
+for(const b of g.enemyBullets){b.y+=4*s;rect(b.x,b.y,b.w,b.h,'#ff80ab');if(box(b,p)){b.y=600;g.lives--;if(g.lives<=0)g.over=true}}g.enemyBullets=g.enemyBullets.filter(b=>b.y<510);
+rect(p.x+13,p.y-12,8,10,'#ffe677');rect(p.x,p.y,p.w,p.h,'#55e6f6');rect(p.x+10,p.y+7,14,8,'#277cb2');
+for(const b of g.bullets)rect(b.x,b.y,b.w,b.h,'#ffe677');text(g.type==='stars'?'STAR DEFENDER':'PIXEL INVADERS',350,30,21,'#b3d6ff')}
+function mazeDraw(g){const size=27,ox=66,oy=39;for(let y=0;y<g.map.length;y++)for(let x=0;x<g.map[y].length;x++){const c=g.map[y][x],px=ox+x*size,py=oy+y*size;if(c==='#')rect(px,py,size-2,size-2,'#2954af');else if(c==='.')circ(px+size/2,py+size/2,3,'#ffe6a2')}circ(ox+g.player.x*size+13,oy+g.player.y*size+13,11,'#ffe25a');for(let i=0;i<g.ghosts.length;i++){const z=g.ghosts[i];circ(ox+z.x*size+13,oy+z.y*size+13,11,['#ff6aab','#6ceaf5','#ef865b'][i]);circ(ox+z.x*size+10,oy+z.y*size+10,2,'white')}}
+function maze(g,dt){if(held('ArrowUp','w','W'))g.dir=[0,-1];else if(held('ArrowDown','s','S'))g.dir=[0,1];else if(held('ArrowLeft','a','A'))g.dir=[-1,0];else if(held('ArrowRight','d','D'))g.dir=[1,0];g.tick+=dt;
+if(g.tick>135){g.tick=0;const move=(p,d)=>{const x=p.x+d[0],y=p.y+d[1];if(g.map[y]&&g.map[y][x]&&g.map[y][x]!=='#'){p.x=x;p.y=y}};
+move(g.player,g.dir);if(g.map[g.player.y][g.player.x]==='.'){g.map[g.player.y][g.player.x]=' ';g.score+=10;g.remaining--}
+if(g.remaining===0){g.over=true;g.score+=500}
+if(g.frame%8===0)for(const z of g.ghosts){const choices=[[1,0],[-1,0],[0,1],[0,-1]].filter(d=>g.map[z.y+d[1]]?.[z.x+d[0]]!=='#'&&g.map[z.y+d[1]]?.[z.x+d[0]]!==undefined);if(choices.length){const d=choices[Math.floor(Math.random()*choices.length)];move(z,d)}}
+if(g.ghosts.some(z=>z.x===g.player.x&&z.y===g.player.y)){g.lives--;g.player={x:1,y:1};if(g.lives<=0)g.over=true}}
+mazeDraw(g);text('MAZE MUNCH',350,24,20,'#ffe477')}
+render();
+</script></body></html>
