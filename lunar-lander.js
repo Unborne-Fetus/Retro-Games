@@ -95,13 +95,12 @@ function landerUpdate(g,dt){
  }
  h.vx+=(g.wind)*frames;h.vy+=g.gravity*frames;
  h.vx=landerClamp(h.vx,-5.5,5.5);h.vy=landerClamp(h.vy,-5.5,5.5);
- const oldX=h.x,oldY=h.y;
  h.x+=h.vx*frames;h.y+=h.vy*frames;
  if(h.x<16||h.x>LANDER_W-16||h.y<25){landerCrash(g);landerDraw(g);return}
  // Approximate the rotated lander's collision by checking each landing leg.
  const sin=Math.sin(h.angle),cos=Math.cos(h.angle);
- const leg1={x:h.x-15*cos+15*sin,y:h.y-15*sin+15*cos};
- const leg2={x:h.x+15*cos+15*sin,y:h.y+15*sin+15*cos};
+ const leg1={x:h.x-15*cos-15*sin,y:h.y-15*sin+15*cos};
+ const leg2={x:h.x+15*cos-15*sin,y:h.y+15*sin+15*cos};
  const leftFloor=landerTerrainAt(g,leg1.x),rightFloor=landerTerrainAt(g,leg2.x);
  if(leg1.y>=leftFloor||leg2.y>=rightFloor){
   const pad=g.pads.find(p=>leg1.x>=p.x+2&&leg2.x<=p.x+p.w-2);
