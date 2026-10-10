@@ -22,7 +22,8 @@
       "arcade-extra.js",
       "electron/**/*",
       "package.json",
-      "arcade-catalog.js"
+      "arcade-catalog.js",
+      "galaga.js"
     ],
     "directories": {
       "output": "dist"
