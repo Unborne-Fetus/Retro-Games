@@ -13,6 +13,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Smoke test first 50 games
+        run: npm run test:smoke
       - name: Install dependencies
         run: npm install --no-audit --no-fund
       - name: Build installer and portable EXE
