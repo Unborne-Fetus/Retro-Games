@@ -1,0 +1,47 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.unborne.retrogames'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.unborne.retrogames'
+        minSdk 23
+        targetSdk 35
+        versionCode 1
+        versionName '1.0.0'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+}
+
+dependencies {
+    implementation 'androidx.webkit:webkit:1.13.0'
+}
+
+// Always include the current repository website files in Android assets.
+// This means the APK uses the same 262-game catalog as Windows and the web.
+def webSource = rootProject.projectDir.parentFile
+def generatedAssets = layout.buildDirectory.dir('generated/arcade-assets')
+tasks.register('syncArcadeAssets', Copy) {
+    from(webSource) {
+        include 'index.html'
+        include '*.js'
+    }
+    into(generatedAssets.map { it.dir('www') })
+}
+android.sourceSets.main.assets.srcDir(generatedAssets)
+tasks.named('preBuild').configure {
+    dependsOn tasks.named('syncArcadeAssets')
+}
