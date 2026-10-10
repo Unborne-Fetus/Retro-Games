@@ -57,7 +57,7 @@ const landerTest=vm.runInContext(`(()=>{
  const advanced=g.wave===2;
  // Cause an unsafe high-speed impact and ensure a life is deducted.
  const hardPad=g.pads[0];g.ship.x=hardPad.x+hardPad.w/2;g.ship.y=hardPad.y-21;g.ship.vy=5;g.ship.vx=2;g.ship.angle=.6;
- landerUpdate(g,16.667);
+ for(let i=0;i<3&&g.phase==='flying';i++)landerUpdate(g,16.667);
  const crash=g.phase==='crash'&&g.lives===2;
  return {success,advanced,crash,entries:builtin.length};
 })()`,sandbox);
