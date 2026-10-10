@@ -1,9 +1,13 @@
 # Retro Games Arcade
 
-A Windows desktop and web collection of 13 playable arcade-inspired games.
+A Windows desktop and web collection of 61 playable arcade-inspired games.
 
 ## Games
-Galaga, Space Invaders, Pac-Man, Breakout, Snake, Pong, Asteroids, Tetris, Frogger, Flappy Bird, 2048, Missile Command, and Out Run.
+
+The app includes 61 game entries. Many newer titles share simplified arcade gameplay engines; they are not feature-complete reproductions of the original commercial releases.
+Galaga, Space Invaders, Pac-Man, Breakout, Snake, Pong, Asteroids, Tetris, Frogger, Flappy Bird, 2048, Missile Command, Out Run, Doodle Jump, Crossy Road, Temple Run, Subway Surfers, Fruit Ninja, Donkey Kong, Super Mario Bros., 1942, Xevious, Arkanoid, Simon, and many more.
+
+
 
 These are unofficial, simplified independent implementations, **not** original arcade ROMs or licensed commercial releases.
 
