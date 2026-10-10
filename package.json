@@ -21,7 +21,8 @@
       "index.html",
       "arcade-extra.js",
       "electron/**/*",
-      "package.json"
+      "package.json",
+      "arcade-catalog.js"
     ],
     "directories": {
       "output": "dist"
