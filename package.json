@@ -28,7 +28,8 @@
       "arcade-polish.js",
       "classic-polish.js",
       "arcade-art.js",
-      "arcade-audio.js"
+      "arcade-audio.js",
+      "lunar-lander.js"
     ],
     "directories": {
       "output": "dist"
