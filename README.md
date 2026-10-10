@@ -1,23 +1,28 @@
 # Retro Games Arcade
 
-A browser-based collection of original retro/arcade-inspired games. No installation, build tools, account, or server is required.
+A Windows desktop and web collection of 13 playable arcade-inspired games.
 
-## Play
-Open `index.html` in a modern browser, or use GitHub Pages after enabling **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+## Games
+Galaga, Space Invaders, Pac-Man, Breakout, Snake, Pong, Asteroids, Tetris, Frogger, Flappy Bird, 2048, Missile Command, and Out Run.
 
-## Included games
-- Star Defender — arcade space shooter
-- Pixel Invaders — formation-based alien shooter
-- Maze Munch — pellet-collecting maze chase
-- Neon Breakout — paddle and bricks
-- Pixel Snake — growing snake survival
+These are unofficial, simplified independent implementations, **not** original arcade ROMs or licensed commercial releases.
 
-Use arrow keys or WASD. Press Space to fire in the shooters. Mobile/touch controls are available.
+## Get Windows EXE
+Go to [Actions → Build Windows EXE](https://github.com/Unborne-Fetus/Retro-Games/actions/workflows/windows.yml). Open a successful run, then download the **Retro-Games-Windows-EXE** artifact. It includes the installer and a portable version.
+
+To build on Windows using Node.js:
+
+```powershell
+npm install
+npm run build:win
+```
+
+Output goes to `dist/`. To run in development, use `npm start`.
+
+## Web version
+Open `index.html` in a browser, or enable GitHub Pages (Settings → Pages → GitHub Actions).
 
 ## Add your own games
-Press **+ Add Game**, provide a title, and select a standalone `.html` file. Imported games are stored locally in the browser using localStorage, and run inside a sandboxed iframe. Browser storage can be cleared by the browser and imported games are not synced between users/devices. For larger games and permanent public contributions, add files to the repository via pull request instead.
+Click **+ Add Game**, then select a self-contained HTML game (under 1.5 MB). Imported games run in a sandboxed iframe, and are stored locally within the app/browser. Imports are **not** shared with other users and can be lost if app/browser storage is cleared. Only import games you trust and have permission to use.
 
-Use only games you trust and have the right to distribute. The built-in games use original minimalist graphics and are inspired by arcade genres, not official copyrighted arcade ROMs.
-
-## Hosting
-The GitHub Actions workflow deploys the static site to GitHub Pages if GitHub Pages is configured to use Actions.
+Permanent game additions can be contributed as pull requests.
