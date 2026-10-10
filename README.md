@@ -33,3 +33,11 @@ Permanent game additions can be contributed as pull requests.
 
 ## Galaga improvements
 Galaga now uses a dedicated enhanced fixed-screen shooter engine with original pixel-art fighters and enemy sprites, entering formations, bees/butterflies/two-hit commanders, looping dives, enemy projectiles, tractor beams, fighter capture and rescue, dual ships, bonus challenge stages, stage progression, hit-rate display, explosions, and locally saved high scores. It is a fan-inspired recreation rather than an asset-for-asset port of the original.
+
+## First 50 gameplay/visual overhaul
+The first **50** library entries now use improved dedicated or specialized arcade engines and original procedural cover artwork, with extra mechanics across the collection. Galaga has formations, dives, commanders, tractor beams, dual-fighter rescue, bonus stages, rapid-fire and shield pick-ups; Space Invaders has destructible bunkers, timed invader attacks, bonus UFO and waves; Pac-Man has power pellets, ghost behavior, fruits and stage progression. The other classics gain arcade effects and features (power-ups in Breakout, hold in Tetris, bonus food in Snake, etc.). The first 37 additional entries now have more elaborate themed platforming, crossing, running, shooting, paddle and collecting systems, with Fruit Ninja-inspired swipe controls and Donkey Kong-inspired ladder/barrel gameplay.
+
+**These are original, simplified arcade-inspired implementations**, not carbon copies, licensed games or extracted commercial game sprites/audio. Many titles still share engines. Real-device playtesting and arcade accuracy are ongoing work.
+
+## Automated testing
+Run `npm run test:smoke` to check all 50 targeted games start and step through simulation, verify the full catalog, and ensure every loaded JavaScript file is included in the Windows executable configuration.
