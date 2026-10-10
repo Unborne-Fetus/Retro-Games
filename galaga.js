@@ -50,7 +50,7 @@ function setTimeoutGalaga(g){g.captureRelease=g.stageTime+3200}
 function galagaDraw(g){rect(0,0,700,500,'#030510');for(const st of g.starfield)rect(st.x,st.y,st.r,st.r,st.r===2?'#577ba3':'#263958');rect(0,0,700,40,'#090d23');rect(0,472,700,28,'#090d23');
 text('1UP',75,19,16,'#f06675');text(String(g.score).padStart(6,'0'),75,36,18,'#ffffff');text('HIGH SCORE',350,19,16,'#f06675');text(String(Math.max(g.score,g.high)).padStart(6,'0'),350,36,18,'#ffffff');text('STAGE '+g.wave,623,23,17,'#e6eaf5');
 for(let i=0;i<Math.max(0,g.lives-1);i++)gSprite('fighter',30+i*25,487,.85);
-if(g.dual)for(const offset of [-16,16]){if(g.invincible<=0||Math.floor(g.time/110)%2===0)gSprite('fighter',g.playerX+offset,g.playerY,2.2)}else if(!g.captured&&(g.invincible<=0||Math.floor(g.time/110)%2===0))gSprite('fighter',g.playerX,g.playerY,2.2);
+if(!g.captured&&(g.invincible<=0||Math.floor(g.time/110)%2===0)){if(g.dual){for(const offset of [-16,16])gSprite('fighter',g.playerX+offset,g.playerY,2.2)}else gSprite('fighter',g.playerX,g.playerY,2.2)}
 for(const a of g.aliens){if(a.dead)continue;const sprite=a.type==='boss'?(a.damaged?'bossBlue':'boss'):a.type==='butter'?'butter':'bee';gSprite(sprite,a.x,a.y,2.5)}
 if(g.beam){const a=g.aliens.find(a=>a.id===g.beam.id);if(a){ctx.save();ctx.fillStyle='rgba(78,230,246,.15)';ctx.beginPath();ctx.moveTo(a.x-18,a.y+10);ctx.lineTo(a.x+63,460);ctx.lineTo(a.x-63,460);ctx.closePath();ctx.fill();ctx.restore();for(let i=0;i<8;i++)rect(a.x-35+i*10,Math.floor(240+Math.sin(g.time*.005+i)*80),3,7,'#74f5fd')}}
 for(const b of g.bullets)rect(b.x-2,b.y,4,13,'#f6ed9c');for(const b of g.enemyBullets)rect(b.x-3,b.y,6,10,'#fca1bf');
